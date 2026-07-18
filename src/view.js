@@ -1,4 +1,4 @@
-import { proxy, subscribe, snapshot } from 'valtio/vanilla'
+import { subscribe} from 'valtio/vanilla'
 
 export default (state, elements) => {
 
