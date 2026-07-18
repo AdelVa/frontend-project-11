@@ -2,7 +2,7 @@ import * as yup from 'yup'
 import { proxy } from 'valtio/vanilla'
 import view from './view.js'
 
-export default () => {
+const app = () => {
 
   const schema = (feeds) => yup.string()
                   .required('Не должно быть пустым')
@@ -49,3 +49,5 @@ export default () => {
   view(state, elements);
 
 };
+
+export default app;

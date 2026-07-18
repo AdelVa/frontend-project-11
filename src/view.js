@@ -1,6 +1,6 @@
 import { subscribe} from 'valtio/vanilla'
 
-export default (state, elements) => {
+const view = (state, elements) => {
 
     subscribe(state.form, () => {
     if (state.form.valid) {
@@ -22,3 +22,5 @@ export default (state, elements) => {
     });
 
 };
+
+export default view;
