@@ -1,26 +1,44 @@
-import * as yup from 'yup'
-import { proxy } from 'valtio/vanilla'
-import view from './view.js'
+import * as yup from 'yup';
+import { proxy } from 'valtio/vanilla';
+import i18n from 'i18next';
+import resources from './resources.js';
+import view from './view.js';
 
 const app = () => {
 
+  yup.setLocale({
+    string: {
+        url:'feedback.invalidUrl',
+      },
+    mixed: {
+      required:'feedback.emptyInput',
+      notOneOf:'feedback.alreadyExists',
+    },
+  });
+
   const schema = (feeds) => yup.string()
-                  .required('Не должно быть пустым')
-                  .url('Ссылка должна быть валидным URL')
-                  .notOneOf(feeds, 'RSS уже существует')
+                  .required()
+                  .url()
+                  .notOneOf(feeds);
 
   const validate = (url, feeds) => {
       return schema(feeds)
       .validate(url)
       .then(() => null)
       .catch(error => error.message)
-  }
+  };
+
+  const i18nextInstance = i18n.createInstance();
+  i18nextInstance.init({
+    lng: 'ru',
+    resources,
+  });
 
   const state = proxy({
     feeds: [], 
     posts: [],
     form: {
-      error: null,
+      feedback: null,
       valid: false,
     }
   });
@@ -37,16 +55,16 @@ const app = () => {
     const url = elements.input.value.trim();
     const error = await validate(url, state.feeds);
     if (error) {
-      state.form.error = error;
+      state.form.feedback = error;
       state.form.valid = false;
     } else {
       state.feeds.push(url);
-      state.form.error = null;
+      state.form.feedback = 'feedback.success';
       state.form.valid = true;
     }
   });
 
-  view(state, elements);
+  view(state, elements, i18nextInstance);
 
 };
 

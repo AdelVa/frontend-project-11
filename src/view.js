@@ -1,26 +1,19 @@
-import { subscribe} from 'valtio/vanilla'
+import { subscribe } from 'valtio/vanilla'
 
-const view = (state, elements) => {
+const view = (state, elements, i18nextInstance) => {
 
     subscribe(state.form, () => {
-    if (state.form.valid) {
-        elements.feedback.textContent = "RSS успешно загружен";
-        elements.feedback.classList.remove('text-danger');
-        elements.feedback.classList.add('text-success');
+        elements.feedback.classList.remove('text-danger', 'text-success');
+        elements.feedback.classList.add(state.form.valid ? 'text-success' : 'text-danger');
+        elements.feedback.textContent = i18nextInstance.t(state.form.feedback);
 
-        elements.input.classList.remove('is-invalid');
-        elements.input.value = '';
-        elements.input.focus();
 
-    } else {
-        elements.feedback.textContent = state.form.error;
-        elements.feedback.classList.remove('text-success');
-        elements.feedback.classList.add('text-danger');
-
-        elements.input.classList.add('is-invalid');
-    }
+        elements.input.classList.toggle("is-invalid", !state.form.valid);
+        if (state.form.valid) {
+            elements.input.value = '';
+            elements.input.focus();
+        };
     });
-
-};
+}   
 
 export default view;
